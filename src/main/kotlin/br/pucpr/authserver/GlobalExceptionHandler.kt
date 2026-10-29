@@ -15,6 +15,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import tools.jackson.databind.DatabindException
 import tools.jackson.databind.exc.InvalidFormatException
+import org.springframework.security.core.AuthenticationException
+import org.springframework.security.access.AccessDeniedException
 
 @RestControllerAdvice
 class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
@@ -91,7 +93,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(problemDetail)
     }
 
-    /* Habilitar com o Spring Security
+    Habilitar com o Spring Security
         @ExceptionHandler(AuthenticationException::class)
         fun handleAuthenticationException(ex: AuthenticationException): ResponseEntity<ProblemDetail> {
             val problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, "Unauthorized")
@@ -104,7 +106,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
             val problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "Forbidden")
             problemDetail.setProperty("errors", mapOf("detail" to listOf(ex.message ?: "Access denied")))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail)
-        }*/
+        }
 
     @ExceptionHandler(DataIntegrityViolationException::class)
     fun handleDatabaseConstraints(ex: DataIntegrityViolationException): ResponseEntity<ProblemDetail> {
@@ -175,3 +177,21 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         return emptyMap()
     }
 }
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class NotFoundException(message: String = "Recurso não encontrado") : RuntimeException(message)
+
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+class BadRequestException(message: String = "Requisição inválida") : RuntimeException(message)
+
+@ExceptionHandler(NotFoundException::class)
+    fun handleNotFound(ex: NotFoundException): ResponseEntity<ProblemDetail> {
+        val problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.message ?: "Not Found")
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail)
+    }
+
+    @ExceptionHandler(BadRequestException::class)
+    fun handleBadRequest(ex: BadRequestException): ResponseEntity<ProblemDetail> {
+        val problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.message ?: "Bad Request")
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail)
+    }
