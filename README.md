@@ -4,13 +4,13 @@ API REST desenvolvida em Kotlin com Spring Boot para autenticação, gestão de 
 
 ---
 
-## 👥 Integrantes da Equipe
+## Integrantes da Equipe
 - Pedro Henrique Alves de Souza Fagundes
-- Yasmim Egidio
+- Yasmim Egidio de Oliveira
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 - Linguagem: Kotlin
 - Framework: Spring Boot 4.0
 - Persistência de Dados: Spring Data JPA / Hibernate
@@ -22,7 +22,7 @@ API REST desenvolvida em Kotlin com Spring Boot para autenticação, gestão de 
 
 ---
 
-## 📐 Modelo de Dados e Relacionamentos JPA
+## Modelo de Dados e Relacionamentos JPA
 
 O sistema foi estruturado seguindo o padrão package-by-domain (customers, products, orders, users):
 
@@ -39,7 +39,7 @@ O sistema foi estruturado seguindo o padrão package-by-domain (customers, produ
 
 ---
 
-## 🚀 Como Executar o Projeto
+## Como Executar o Projeto
 
 ### Pré-requisitos
 - Java JDK 21 instalado e configurado nas variáveis de ambiente.
@@ -57,7 +57,7 @@ O sistema foi estruturado seguindo o padrão package-by-domain (customers, produ
 
 ---
 
-## 📌 Principais Recursos da API
+## Principais Recursos da API
 
 - Produtos (/products):
   - Cadastro de produto com validação e checagem de duplicidade de nome.
@@ -74,7 +74,7 @@ O sistema foi estruturado seguindo o padrão package-by-domain (customers, produ
 
 ---
 
-## 🛡️ Tratamento de Erros e Auditoria
+## Tratamento de Erros e Auditoria
 
 - RFC 9457 (ProblemDetail): Respostas de erro padronizadas globalmente via @RestControllerAdvice para validações (HTTP 422), recursos não encontrados (HTTP 404) e requisições inválidas (HTTP 400).
 - Logs com SLF4J: Rastreamento em nível INFO e WARN nas operações de criação, alteração e regras de negócio.
