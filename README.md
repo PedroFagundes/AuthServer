@@ -53,10 +53,7 @@ O sistema foi estruturado seguindo o padrão package-by-domain (customers, produ
 
 3. Acesse a documentação interativa no navegador:
    - Swagger UI: http://localhost:8080/api/swagger-ui/index.html
-   - H2 Console: http://localhost:8080/api/h2-console
-     - JDBC URL: jdbc:h2:mem:db
-     - User: SA
-     - Password: (em branco)
+   
 
 ---
 
