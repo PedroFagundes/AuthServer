@@ -43,7 +43,7 @@ class UserService(
         val direction = if (dir == SortDir.ASC) Sort.Direction.ASC else Sort.Direction.DESC
         return repository.search(
             search?.trim()?.takeIf { it.isNotEmpty() },
-            role?.trim()?.takeIf { it.isNotEmpty() },
+            role,
             Sort.by(direction, "name")
         )
     }
