@@ -13,8 +13,10 @@ class RoleController(
     val service: RoleService
 ) {
     @GetMapping
-    fun list(): ResponseEntity<List<RoleResponse>> {
-        return service.findAll()
+    fun list(
+        @RequestParam(required = false) search: String?
+    ): ResponseEntity<List<RoleResponse>> {
+        return service.findAll(search)
             .map { RoleResponse(it) }
             .let { ResponseEntity.ok(it) }
     }

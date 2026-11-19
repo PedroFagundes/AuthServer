@@ -61,16 +61,25 @@ O sistema foi estruturado seguindo o padrão package-by-domain (customers, produ
 
 - Produtos (/products):
   - Cadastro de produto com validação e checagem de duplicidade de nome.
-  - Listagem com filtros opcionais via query params (category e sortDir).
+  - Listagem filtrável por texto (`search`), categoria (`category`), faixa de preço (`minPrice`/`maxPrice`) e situação (`active`), com ordenação (`sortDir`).
   - Consulta por ID, atualização e remoção.
+
+- Usuários (/users):
+  - Listagem filtrável por texto no nome/e-mail (`search`) e perfil de acesso (`role`), com ordenação (`sortDir`).
+
+- Perfis de acesso (/roles):
+  - Listagem filtrável por texto no nome/descrição (`search`).
 
 - Pedidos (/orders):
   - Abertura de pedido associado a um usuário.
+  - Listagem filtrável por texto no usuário/produtos (`search`), estado (`status`), usuário (`userId`), produto (`productId`) e período (`createdAfter`/`createdBefore`).
   - Associação e desassociação de itens ao pedido com cálculo de subtotal e total.
   - Consulta detalhada do pedido com carregamento otimizado (LEFT JOIN FETCH).
 
 - Clientes (/users/{userId}/profile):
   - Cadastro e consulta de perfil de endereço/contato associado 1:1 ao usuário.
+- Perfis de clientes (/users/profiles):
+  - Listagem filtrável por texto (`search`), endereço (`address`), telefone (`phone`) e usuário (`userId`).
 
 ---
 

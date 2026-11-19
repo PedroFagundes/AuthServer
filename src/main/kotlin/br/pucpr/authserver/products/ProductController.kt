@@ -3,6 +3,7 @@ package br.pucpr.authserver.products
 import br.pucpr.authserver.products.dto.ProductRequest
 import br.pucpr.authserver.products.dto.ProductResponse
 import jakarta.validation.Valid
+import java.math.BigDecimal
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -19,11 +20,14 @@ class ProductController(private val productService: ProductService) {
 
     @GetMapping
     fun list(
+        @RequestParam(required = false) search: String?,
         @RequestParam(required = false) category: String?,
+        @RequestParam(required = false) minPrice: BigDecimal?,
+        @RequestParam(required = false) maxPrice: BigDecimal?,
+        @RequestParam(required = false) active: Boolean?,
         @RequestParam(defaultValue = "ASC") sortDir: String
-    ): ResponseEntity<List<ProductResponse>> {
-        return ResponseEntity.ok(productService.list(category, sortDir))
-    }
+    ): ResponseEntity<List<ProductResponse>> =
+        ResponseEntity.ok(productService.list(search, category, minPrice, maxPrice, active, sortDir))
 
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): ResponseEntity<ProductResponse> {

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 
 @Service
 class ProductService(private val productRepository: ProductRepository) {
@@ -31,15 +32,29 @@ class ProductService(private val productRepository: ProductRepository) {
         return saved.toResponse()
     }
 
-    fun list(category: String?, sortDir: String): List<ProductResponse> {
+    fun list(
+        search: String?,
+        category: String?,
+        minPrice: BigDecimal?,
+        maxPrice: BigDecimal?,
+        active: Boolean?,
+        sortDir: String
+    ): List<ProductResponse> {
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            throw BadRequestException("O preço mínimo não pode ser maior que o preço máximo")
+        }
+
         val direction = if (sortDir.equals("DESC", ignoreCase = true)) Sort.Direction.DESC else Sort.Direction.ASC
         val sort = Sort.by(direction, "name")
 
-        val products = if (!category.isNullOrBlank()) {
-            productRepository.findByCategoryIgnoreCase(category, sort)
-        } else {
-            productRepository.findAll(sort)
-        }
+        val products = productRepository.findByFilters(
+            search?.trim()?.takeIf { it.isNotEmpty() },
+            category?.trim()?.takeIf { it.isNotEmpty() },
+            minPrice,
+            maxPrice,
+            active,
+            sort
+        )
         return products.map { it.toResponse() }
     }
 

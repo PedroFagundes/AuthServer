@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
+import java.time.LocalDateTime
 
 @Service
 class OrderService(
@@ -82,6 +83,29 @@ class OrderService(
         val order = orderRepository.findByIdWithItems(id)
             ?: throw NotFoundException("Pedido ID $id não encontrado")
         return order.toResponse()
+    }
+
+    @Transactional(readOnly = true)
+    fun list(
+        search: String?,
+        status: OrderStatus?,
+        userId: Long?,
+        productId: Long?,
+        createdAfter: LocalDateTime?,
+        createdBefore: LocalDateTime?
+    ): List<OrderResponse> {
+        if (createdAfter != null && createdBefore != null && createdAfter.isAfter(createdBefore)) {
+            throw BadRequestException("A data inicial não pode ser posterior à data final")
+        }
+
+        return orderRepository.findByFilters(
+            search?.trim()?.takeIf { it.isNotEmpty() },
+            status,
+            userId,
+            productId,
+            createdAfter,
+            createdBefore
+        ).map { it.toResponse() }
     }
 
     @Transactional

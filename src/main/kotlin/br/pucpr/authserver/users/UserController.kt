@@ -18,12 +18,11 @@ class UserController(
 ) {
     @GetMapping
     fun list(
-        @RequestParam sortDir: String?,
-        @RequestParam role: String?
+        @RequestParam(defaultValue = "ASC") sortDir: String,
+        @RequestParam(required = false) role: String?,
+        @RequestParam(required = false) search: String?
     ): ResponseEntity<List<UserResponse>> {
-        val users = if (role != null) userService.findByRole(role)
-        else SortDir.findOrThrow(sortDir ?: "ASC")
-            .let { userService.findAll(it) }
+        val users = userService.search(search, role, SortDir.findOrThrow(sortDir))
 
         return users
             .map { UserResponse(it) }

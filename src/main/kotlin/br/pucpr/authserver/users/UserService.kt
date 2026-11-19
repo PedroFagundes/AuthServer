@@ -38,6 +38,16 @@ class UserService(
             repository.findAll(Sort.by("name").descending())
 
     fun findByRole(role: String) = repository.findByRole(role.uppercase())
+
+    fun search(search: String?, role: String?, dir: SortDir): List<User> {
+        val direction = if (dir == SortDir.ASC) Sort.Direction.ASC else Sort.Direction.DESC
+        return repository.search(
+            search?.trim()?.takeIf { it.isNotEmpty() },
+            role?.trim()?.takeIf { it.isNotEmpty() },
+            Sort.by(direction, "name")
+        )
+    }
+
     fun findByIdOrNull(id: Long) = repository.findByIdOrNull(id)
     fun deleteById(id: Long) = repository
         .deleteById(id)

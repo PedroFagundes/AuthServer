@@ -3,6 +3,7 @@ package br.pucpr.authserver.orders
 import br.pucpr.authserver.orders.dto.AddItemRequest
 import br.pucpr.authserver.orders.dto.OrderResponse
 import jakarta.validation.Valid
+import java.time.LocalDateTime
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -11,6 +12,17 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/orders")
 class OrderController(private val orderService: OrderService) {
+
+    @GetMapping
+    fun list(
+        @RequestParam(required = false) search: String?,
+        @RequestParam(required = false) status: OrderStatus?,
+        @RequestParam(required = false) userId: Long?,
+        @RequestParam(required = false) productId: Long?,
+        @RequestParam(required = false) createdAfter: LocalDateTime?,
+        @RequestParam(required = false) createdBefore: LocalDateTime?
+    ): ResponseEntity<List<OrderResponse>> =
+        ResponseEntity.ok(orderService.list(search, status, userId, productId, createdAfter, createdBefore))
 
     @PostMapping("/users/{userId}")
     fun create(@PathVariable userId: Long): ResponseEntity<OrderResponse> {

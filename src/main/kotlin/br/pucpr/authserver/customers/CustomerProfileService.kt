@@ -37,4 +37,12 @@ class CustomerProfileService(
             .orElseThrow { NotFoundException("Perfil não encontrado para o usuário ID $userId") }
         return CustomerProfileResponse(userId = profile.id!!, address = profile.address, phone = profile.phone)
     }
+
+    fun list(search: String?, address: String?, phone: String?, userId: Long?): List<CustomerProfileResponse> =
+        customerProfileRepository.findByFilters(
+            search?.trim()?.takeIf { it.isNotEmpty() },
+            address?.trim()?.takeIf { it.isNotEmpty() },
+            phone?.trim()?.takeIf { it.isNotEmpty() },
+            userId
+        ).map { CustomerProfileResponse(userId = it.id!!, address = it.address, phone = it.phone) }
 }

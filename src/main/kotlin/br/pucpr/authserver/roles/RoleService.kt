@@ -1,7 +1,6 @@
 package br.pucpr.authserver.roles
 
 import br.pucpr.authserver.users.SortDir
-import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
@@ -18,5 +17,6 @@ class RoleService(
         return repository.save(role)
     }
 
-    fun findAll() = repository.findAll(Sort.by("name"))
+    fun findAll(search: String? = null) =
+        repository.findAllBySearch(search?.trim()?.takeIf { it.isNotEmpty() })
 }
