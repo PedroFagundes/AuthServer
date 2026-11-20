@@ -10,6 +10,10 @@ API REST desenvolvida em Kotlin com Spring Boot para autenticação, gestão de 
 
 ---
 
+## Link do Youtube: https://youtu.be/jMLPsmVNJcQ
+
+---
+
 ## Tecnologias Utilizadas
 - Linguagem: Kotlin
 - Framework: Spring Boot 4.0
