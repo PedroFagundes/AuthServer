@@ -1,43 +1,27 @@
-# AuthServer - Módulo de E-commerce / Restaurante
+# AuthServer - Restaurante
 
 API REST desenvolvida em Kotlin com Spring Boot para autenticação, gestão de produtos, clientes e pedidos. Projeto desenvolvido como requisito de avaliação da disciplina de Desenvolvimento Back-End.
-
----
 
 ## Integrantes da Equipe
 - Pedro Henrique Alves de Souza Fagundes
 - Yasmim Egidio de Oliveira
 
----
-
 ## Tecnologias Utilizadas
 - Linguagem: Kotlin
-- Framework: Spring Boot 4.0
-- Persistência de Dados: Spring Data JPA / Hibernate
-- Banco de Dados: H2 Database (In-Memory)
-- Segurança: Spring Security
-- Documentação de API: SpringDoc OpenAPI / Swagger UI
-- Padronização de Erros: RFC 9457 (ProblemDetail)
-- Logs: SLF4J
-
----
 
 ## Modelo de Dados e Relacionamentos JPA
+O sistema foi estruturado(customers, products, orders, users):
 
-O sistema foi estruturado seguindo o padrão package-by-domain (customers, products, orders, users):
-
-1. User (1) <-> CustomerProfile (1):
-   - Relacionamento @OneToOne utilizando @MapsId.
+1. User (1) for CustomerProfile (1):
+   - Relacionamento One To One utilizando Maps Id.
    - Vincula os dados de entrega e contato do cliente diretamente ao ID da conta do usuário.
 
-2. User (1) <-> Order (N):
-   - Relacionamento @ManyToOne. Um usuário pode realizar múltiplos pedidos no sistema.
+2. User (1) for Order (N):
+   - Relacionamento Many To One. Um usuário pode realizar múltiplos pedidos no sistema.
 
-3. Order (N) <-> Product (N) com Tabela Associativa intermediária (OrderItem):
-   - Relacionamento @OneToMany em Order e @ManyToOne em OrderItem.
+3. Order (N) for Product (N) com Tabela Associativa intermediária (OrderItem):
+   - Relacionamento One To Many em Order e Many To one em OrderItem.
    - A entidade OrderItem funciona como a tabela associativa no meio, agregando atributos de negócio próprios (quantidade e preço unitário congelado no momento da compra).
-
----
 
 ## Como Executar o Projeto
 
@@ -54,9 +38,6 @@ O sistema foi estruturado seguindo o padrão package-by-domain (customers, produ
 3. Acesse a documentação interativa no navegador:
    - Swagger UI: http://localhost:8080/api/swagger-ui/index.html
    
-
----
-
 ## Principais Recursos da API
 
 - Produtos (/products):
@@ -74,16 +55,10 @@ O sistema foi estruturado seguindo o padrão package-by-domain (customers, produ
   - Abertura de pedido associado a um usuário.
   - Listagem filtrável por texto no usuário/produtos (`search`), estado (`status`), usuário (`userId`), produto (`productId`) e período (`createdAfter`/`createdBefore`).
   - Associação e desassociação de itens ao pedido com cálculo de subtotal e total.
-  - Consulta detalhada do pedido com carregamento otimizado (LEFT JOIN FETCH).
+  - Consulta detalhada do pedido com carregamento otimizado.
 
 - Clientes (/users/{userId}/profile):
   - Cadastro e consulta de perfil de endereço/contato associado 1:1 ao usuário.
 - Perfis de clientes (/users/profiles):
   - Listagem filtrável por texto (`search`), endereço (`address`), telefone (`phone`) e usuário (`userId`).
 
----
-
-## Tratamento de Erros e Auditoria
-
-- RFC 9457 (ProblemDetail): Respostas de erro padronizadas globalmente via @RestControllerAdvice para validações (HTTP 422), recursos não encontrados (HTTP 404) e requisições inválidas (HTTP 400).
-- Logs com SLF4J: Rastreamento em nível INFO e WARN nas operações de criação, alteração e regras de negócio.
