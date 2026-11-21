@@ -1,26 +1,42 @@
 package br.pucpr.authserver.users
 
 import br.pucpr.authserver.roles.RoleRepository
-import org.slf4j.Logger
+import br.pucpr.authserver.security.JWT
+import br.pucpr.authserver.users.responses.LoginResponse
+import br.pucpr.authserver.users.responses.UserResponse
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 
 @Service
 class UserService(
     val repository: UserRepository,
-    val roleRepository: RoleRepository
+    val roleRepository: RoleRepository,
+    val passwordEncoder: PasswordEncoder,
+    val jwt: JWT
 ) {
     fun insert(user: User): User {
         if (repository.findByEmail(user.email) != null) {
             throw ResponseStatusException(HttpStatus.CONFLICT, "User already exists")
         }
+        user.password = passwordEncoder.encode(user.password)!!
         return repository
             .save(user)
             .also { log.info("User {} created!", it.id) }
+    }
+
+    fun login(email: String, password: String): LoginResponse? {
+        val user = repository.findByEmail(email) ?: return null
+        if (!passwordEncoder.matches(password, user.password)) return null
+        log.info("User logged in. id={}, name={}", user.id, user.name)
+        return LoginResponse(
+            token = jwt.createToken(user),
+            user = UserResponse(user)
+        )
     }
 
     fun update(id: Long, name: String): User? {
@@ -49,9 +65,11 @@ class UserService(
     }
 
     fun findByIdOrNull(id: Long) = repository.findByIdOrNull(id)
+
     fun deleteById(id: Long) = repository
         .deleteById(id)
         .also { log.warn("User {} deleted", id) }
+
     fun addRole(id: Long, roleName: String): Boolean {
         val upperRole = roleName.uppercase()
         val user = findByIdOrNull(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "User $id not found!")

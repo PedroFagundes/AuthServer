@@ -2,6 +2,7 @@ package br.pucpr.authserver.orders
 
 import br.pucpr.authserver.orders.dto.AddItemRequest
 import br.pucpr.authserver.orders.dto.OrderResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import java.time.LocalDateTime
 import org.springframework.http.HttpStatus
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/orders")
+@SecurityRequirement(name = "AuthServer")
 class OrderController(private val orderService: OrderService) {
 
     @GetMapping
@@ -43,6 +45,7 @@ class OrderController(private val orderService: OrderService) {
     }
 
     @DeleteMapping("/{orderId}/items/{productId}")
+    @PreAuthorize("hasRole('ADMIN')")
     fun removeItem(
         @PathVariable orderId: Long,
         @PathVariable productId: Long

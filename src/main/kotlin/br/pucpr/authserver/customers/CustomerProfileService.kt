@@ -23,8 +23,8 @@ class CustomerProfileService(
         val profile = customerProfileRepository.findById(userId).orElse(
             CustomerProfile(address = req.address!!, phone = req.phone!!, user = user)
         ).apply {
-            address = req.address!!
-            phone = req.phone!!
+            address = req.address
+            phone = req.phone
         }
 
         val saved = customerProfileRepository.save(profile)
@@ -45,4 +45,12 @@ class CustomerProfileService(
             phone?.trim()?.takeIf { it.isNotEmpty() },
             userId
         ).map { CustomerProfileResponse(userId = it.id!!, address = it.address, phone = it.phone) }
+
+    @Transactional
+    fun deleteProfile(userId: Long) {
+        val profile = customerProfileRepository.findById(userId)
+            .orElseThrow { NotFoundException("Perfil não encontrado para o usuário ID $userId") }
+        customerProfileRepository.delete(profile)
+        log.info("Perfil removido para o usuário ID {}", userId)
+    }
 }

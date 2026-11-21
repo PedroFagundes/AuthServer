@@ -2,6 +2,7 @@ package br.pucpr.authserver.products
 
 import br.pucpr.authserver.products.dto.ProductRequest
 import br.pucpr.authserver.products.dto.ProductResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import java.math.BigDecimal
 import org.springframework.http.HttpStatus
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/products")
+@SecurityRequirement(name = "AuthServer")
 class ProductController(private val productService: ProductService) {
 
     @PostMapping
